@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Speed Build: Silly Hacks Edition</title>
+<link href="https://fonts.googleapis.com/css2?family=Boogaloo&family=Barlow+Condensed:ital,wght@0,400;0,700;0,900;1,900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #FF1E1E;
+    --orange: #FF6B00;
+    --yellow: #FFE000;
+    --green: #00D26A;
+    --blue: #0099FF;
+    --pink: #FF3DB4;
+    --white: #FFFFFF;
+    --bg: #FFF8EE;
+    --dark: #1A1A1A;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Barlow Condensed', sans-serif;
+    background: var(--bg);
+    color: var(--dark);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* PAGES */
+  .page { display: none; min-height: 100vh; position: relative; }
+  .page.active { display: flex; flex-direction: column; }
+
+  /* ============================================================
+     PAGE 1 — TITLE
+  ============================================================ */
+  #page-title {
+    background: var(--dark);
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .title-bg {
+    position: absolute;
+    inset: 0;
+    background: repeating-conic-gradient(
+      from 0deg at 50% 50%,
+      transparent 0deg, transparent 8deg,
+      rgba(255,107,0,0.06) 8deg, rgba(255,107,0,0.06) 9deg
+    );
+    animation: spin 40s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .title-content {
+    position: relative;
+    z-index: 2;
+    padding: 40px;
+  }
+
+  .title-badge {
+    display: inline-block;
+    background: var(--red);
+    color: var(--white);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 4px;
+    padding: 8px 20px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    animation: badgePop 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards;
+  }
+  @keyframes badgePop { from { transform: scale(0); } to { transform: scale(1); } }
+
+  .title-main {
+    font-family: 'Boogaloo', cursive;
+    font-size: clamp(60px, 12vw, 130px);
+    color: var(--white);
+    line-height: 0.9;
+    margin-bottom: 8px;
+  }
+  .title-main .speed { color: var(--yellow); }
+  .title-main .build { color: var(--orange); -webkit-text-stroke: 2px var(--orange); }
+
+  .title-sub {
+    font-family: 'Boogaloo', cursive;
+    font-size: clamp(28px, 5vw, 56px);
+    color: var(--pink);
+    margin-top: 8px;
+    letter-spacing: 2px;
+  }
+
+  .title-meta {
+    margin-top: 32px;
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .meta-pill {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.7);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 2px;
+    padding: 8px 18px;
+    text-transform: uppercase;
+  }
+
+  .speed-lines-deco {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin: 32px 0;
+  }
+  .speed-lines-deco span {
+    display: block;
+    height: 4px;
+    border-radius: 2px;
+    animation: lineGrow 1s ease-in-out infinite alternate;
+  }
+  .speed-lines-deco span:nth-child(1) { width: 12px; background: var(--red); animation-delay: 0s; }
+  .speed-lines-deco span:nth-child(2) { width: 40px; background: var(--orange); animation-delay: 0.1s; }
+  .speed-lines-deco span:nth-child(3) { width: 80px; background: var(--yellow); animation-delay: 0.2s; }
+  .speed-lines-deco span:nth-child(4) { width: 40px; background: var(--orange); animation-delay: 0.3s; }
+  .speed-lines-deco span:nth-child(5) { width: 12px; background: var(--red); animation-delay: 0.4s; }
+  @keyframes lineGrow { from { transform: scaleX(0.6); opacity: 0.4; } to { transform: scaleX(1); opacity: 1; } }
+
+  /* ============================================================
+     PAGE 2 — RULES
+  ============================================================ */
+  #page-rules {
+    background: var(--bg);
+    padding: 60px 40px;
+    align-items: center;
+  }
+
+  .rules-container {
+    max-width: 760px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .page-eyebrow {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--orange);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .page-title-sm {
+    font-family: 'Boogaloo', cursive;
+    font-size: clamp(48px, 8vw, 80px);
+    color: var(--dark);
+    line-height: 0.9;
+    margin-bottom: 40px;
+  }
+  .page-title-sm span { color: var(--red); }
+
+  .rules-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+
+  .rule-item {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 20px;
+    align-items: start;
+    padding: 24px;
+    background: var(--white);
+    border: 2px solid transparent;
+    transition: border-color 0.2s;
+  }
+  .rule-item:hover { border-color: var(--orange); }
+
+  .rule-num {
+    font-family: 'Boogaloo', cursive;
+    font-size: 48px;
+    line-height: 1;
+    color: var(--orange);
+    opacity: 0.4;
+  }
+  .rule-text h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 22px;
+    text-transform: uppercase;
+    color: var(--dark);
+    margin-bottom: 4px;
+  }
+  .rule-text p {
+    font-size: 16px;
+    color: #555;
+    line-height: 1.5;
+    font-weight: 400;
+  }
+  .rule-text .highlight {
+    display: inline-block;
+    background: var(--yellow);
+    padding: 1px 8px;
+    font-weight: 700;
+    color: var(--dark);
+  }
+
+  .rules-summary {
+    background: var(--dark);
+    color: var(--white);
+    padding: 28px 32px;
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+  }
+  .summary-stat { flex: 1; min-width: 120px; }
+  .summary-stat .s-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .summary-stat .s-val {
+    font-family: 'Boogaloo', cursive;
+    font-size: 36px;
+    color: var(--yellow);
+    line-height: 1;
+  }
+  .summary-stat .s-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.4);
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  /* ============================================================
+     PAGE 3 — GAME SHOW
+  ============================================================ */
+  #page-game {
+    background: var(--dark);
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  .game-header {
+    background: var(--red);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .game-header h1 {
+    font-family: 'Boogaloo', cursive;
+    font-size: 28px;
+    color: var(--white);
+    letter-spacing: 1px;
+  }
+  .game-header h1 span { color: var(--yellow); }
+
+  .game-controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  /* ROUND DISPLAY */
+  .round-display {
+    background: rgba(255,255,255,0.1);
+    padding: 6px 16px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: var(--white);
+    text-transform: uppercase;
+  }
+
+  /* COUNTDOWN TIMER */
+  .countdown-bar {
+    background: var(--dark);
+    border-bottom: 3px solid rgba(255,255,255,0.08);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .countdown-timer {
+    font-family: 'Boogaloo', cursive;
+    font-size: clamp(56px, 10vw, 100px);
+    line-height: 1;
+    color: var(--white);
+    letter-spacing: 4px;
+    transition: color 0.3s;
+    text-shadow: 0 0 40px rgba(255,255,255,0.1);
+    min-width: 280px;
+    text-align: center;
+  }
+  .countdown-timer.urgent { color: var(--orange); text-shadow: 0 0 40px rgba(255,107,0,0.4); }
+  .countdown-timer.critical { color: var(--red); text-shadow: 0 0 60px rgba(255,30,30,0.6); animation: critPulse 0.5s step-end infinite; }
+  .countdown-timer.done { color: var(--red); }
+  .countdown-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: rgba(255,255,255,0.3);
+    text-transform: uppercase;
+    text-align: center;
+    margin-top: 4px;
+  }
+  .countdown-wrap { text-align: center; }
+  .time-done-banner {
+    display: none;
+    background: var(--red);
+    color: var(--white);
+    font-family: 'Boogaloo', cursive;
+    font-size: 28px;
+    padding: 8px 24px;
+    letter-spacing: 2px;
+    animation: badgePop 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .time-done-banner.visible { display: block; }
+
+  /* CATEGORY BANNER */
+  .category-banner {
+    display: none;
+    background: var(--yellow);
+    padding: 20px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .category-banner.visible { display: block; }
+  .category-banner .cat-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: rgba(0,0,0,0.5);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .category-banner .cat-text {
+    font-family: 'Boogaloo', cursive;
+    font-size: clamp(32px, 6vw, 64px);
+    color: var(--dark);
+    line-height: 1;
+  }
+  .category-banner .cat-blank {
+    color: var(--red);
+    border-bottom: 4px solid var(--red);
+    min-width: 200px;
+    display: inline-block;
+    padding: 0 12px;
+  }
+
+  /* TEAMS GRID */
+  .teams-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    flex: 1;
+    padding: 20px;
+    gap: 16px;
+  }
+
+  .team-card {
+    background: rgba(255,255,255,0.05);
+    border: 2px solid rgba(255,255,255,0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 16px;
+    gap: 12px;
+    transition: border-color 0.3s;
+    position: relative;
+  }
+  .team-card.stopped {
+    border-color: var(--green);
+    background: rgba(0,210,106,0.08);
+  }
+  .team-card.stopped::after {
+    content: 'LOCKED IN';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--green);
+    background: rgba(0,210,106,0.2);
+    padding: 3px 8px;
+  }
+
+  .team-name-display {
+    font-family: 'Boogaloo', cursive;
+    font-size: 28px;
+    color: var(--white);
+    text-align: center;
+    line-height: 1;
+  }
+
+  .team-pot {
+    font-family: 'Boogaloo', cursive;
+    font-size: clamp(48px, 5vw, 72px);
+    line-height: 1;
+    text-align: center;
+    transition: color 0.3s;
+  }
+  .team-pot.high { color: var(--green); }
+  .team-pot.mid { color: var(--yellow); }
+  .team-pot.low { color: var(--orange); }
+  .team-pot.critical { color: var(--red); animation: critPulse 0.5s step-end infinite; }
+  @keyframes critPulse { 50% { opacity: 0.4; } }
+
+  .team-total {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+    text-align: center;
+  }
+  .team-total span {
+    color: var(--yellow);
+    font-size: 14px;
+  }
+
+  .team-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+
+  /* BUTTONS */
+  .btn {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-style: italic;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 12px 16px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    width: 100%;
+  }
+  .btn:hover { transform: scale(1.02); }
+  .btn:active { transform: scale(0.98); }
+
+  .btn-stop {
+    background: var(--green);
+    color: var(--dark);
+  }
+  .btn-stop:disabled {
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.2);
+    cursor: not-allowed;
+    transform: none;
+  }
+  .btn-bonus {
+    background: rgba(255,224,0,0.15);
+    color: var(--yellow);
+    border: 1px solid rgba(255,224,0,0.3);
+    font-size: 14px;
+  }
+  .btn-bonus:hover { background: rgba(255,224,0,0.25); }
+
+  .btn-reset-team {
+    background: rgba(255,255,255,0.05);
+    color: rgba(255,255,255,0.3);
+    border: 1px solid rgba(255,255,255,0.1);
+    font-size: 13px;
+  }
+
+  /* GAME FOOTER CONTROLS */
+  .game-footer {
+    background: rgba(0,0,0,0.4);
+    padding: 16px 24px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .btn-play-round {
+    background: var(--orange);
+    color: var(--white);
+    font-family: 'Boogaloo', cursive;
+    font-size: 22px;
+    font-style: normal;
+    padding: 12px 32px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 1px;
+  }
+  .btn-play-round:hover { background: var(--red); transform: scale(1.02); }
+
+  .btn-start-clock {
+    background: var(--green);
+    color: var(--dark);
+    font-family: 'Boogaloo', cursive;
+    font-size: 22px;
+    font-style: normal;
+    padding: 12px 32px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-start-clock:hover { opacity: 0.9; transform: scale(1.02); }
+  .btn-start-clock.running {
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.4);
+  }
+
+  .btn-bonus-round {
+    background: var(--yellow);
+    color: var(--dark);
+    font-family: 'Boogaloo', cursive;
+    font-size: 22px;
+    font-style: normal;
+    padding: 12px 32px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 1px;
+    animation: bonusGlow 2s ease-in-out infinite;
+  }
+  .btn-bonus-round:hover { background: var(--orange); color: var(--white); transform: scale(1.04); }
+  @keyframes bonusGlow {
+    0%, 100% { box-shadow: 0 0 0px rgba(255,224,0,0); }
+    50% { box-shadow: 0 0 20px rgba(255,224,0,0.5); }
+  }
+
+  /* BONUS ROUND BANNER */
+  .bonus-banner {
+    display: none;
+    background: linear-gradient(135deg, var(--yellow), var(--orange));
+    padding: 16px 24px;
+    text-align: center;
+    animation: badgePop 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .bonus-banner.visible { display: block; }
+  .bonus-banner-text {
+    font-family: 'Boogaloo', cursive;
+    font-size: clamp(28px, 5vw, 48px);
+    color: var(--dark);
+    letter-spacing: 2px;
+  }
+  .bonus-banner-sub {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: rgba(0,0,0,0.5);
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+    background: transparent;
+    color: rgba(255,255,255,0.3);
+    border: 1px solid rgba(255,255,255,0.15);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    padding: 12px 20px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.15s;
+  }
+  .btn-reset-all:hover { color: var(--red); border-color: var(--red); }
+
+  .clock-status {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.3);
+    text-transform: uppercase;
+    padding: 12px 16px;
+  }
+  .clock-status.ticking {
+    color: var(--green);
+    animation: blink 1s step-end infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* NEXT BUTTON */
+  .btn-next {
+    font-family: 'Boogaloo', cursive;
+    font-size: 24px;
+    font-style: normal;
+    padding: 16px 48px;
+    background: var(--orange);
+    color: var(--white);
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 1px;
+    clip-path: polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%);
+  }
+  .btn-next:hover { background: var(--red); transform: scale(1.03); }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 999;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--dark);
+    border: 2px solid var(--orange);
+    max-width: 600px;
+    width: 100%;
+    padding: 40px;
+    text-align: center;
+    animation: modalPop 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes modalPop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+  .modal-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: var(--orange);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .modal-category {
+    font-family: 'Boogaloo', cursive;
+    font-size: clamp(40px, 8vw, 72px);
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .modal-category .modal-blank {
+    color: var(--yellow);
+    border-bottom: 3px solid var(--yellow);
+    display: inline-block;
+    min-width: 180px;
+    padding: 0 8px;
+  }
+  .modal-sub {
+    font-size: 16px;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 32px;
+    font-family: 'Share Tech Mono', monospace;
+    letter-spacing: 1px;
+    font-size: 13px;
+  }
+  .modal-close {
+    background: var(--orange);
+    color: var(--white);
+    font-family: 'Boogaloo', cursive;
+    font-size: 22px;
+    padding: 14px 40px;
+    border: none;
+    cursor: pointer;
+    letter-spacing: 1px;
+  }
+  .modal-close:hover { background: var(--red); }
+
+  /* RESPONSIVE */
+  @media (max-width: 800px) {
+    .teams-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 500px) {
+    .teams-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     PAGE 1 — TITLE
+============================================================ -->
+<div id="page-title" class="page active">
+  <div class="title-bg"></div>
+  <div class="title-content">
+    <div class="title-badge">// Foundertown 2026 &nbsp;·&nbsp; MVP Edition</div>
+    <h1 class="title-main">
+      <span class="speed">Speed</span><br>
+      <span class="build">Build</span>
+    </h1>
+    <div class="title-sub">Silly Hacks Edition 🚀</div>
+
+    <div class="speed-lines-deco">
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+
+    <div class="title-meta">
+      <div class="meta-pill">3 Rounds</div>
+      <div class="meta-pill">£100 Prize Pot</div>
+      <div class="meta-pill">30 Min Build</div>
+      <div class="meta-pill">+£50 Bonus</div>
+    </div>
+
+    <div style="margin-top: 48px;">
+      <button class="btn-next" onclick="goTo('page-rules')">Let's Go →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE 2 — RULES
+============================================================ -->
+<div id="page-rules" class="page">
+  <div class="rules-container">
+    <div class="page-eyebrow">// How It Works</div>
+    <h2 class="page-title-sm">The <span>Rules</span></h2>
+
+    <div class="rules-list">
+
+      <div class="rule-item">
+        <div class="rule-num">1</div>
+        <div class="rule-text">
+          <h3>Pick a Category</h3>
+          <p>The Hack Master spins the wheel — <span class="highlight">World's Best</span>, <span class="highlight">World's Worst</span>, <span class="highlight">Most Useless</span>, <span class="highlight">Most Dangerous</span> and more. The category type is revealed on screen.</p>
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">2</div>
+        <div class="rule-text">
+          <h3>Write Your Suggestion</h3>
+          <p>Everyone writes a suggestion for that category on a piece of paper and throws it in the hat. One gets pulled at random. That's your brief. No negotiating.</p>
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">3</div>
+        <div class="rule-text">
+          <h3>The Clock Starts</h3>
+          <p>You have <span class="highlight">30 minutes</span> to build something — anything — that answers the brief. Agent, app, prototype, demo, terrible website. Doesn't matter. The prize pot starts at <span class="highlight">£100</span> and drops <span class="highlight">£1 every minute</span>. The longer you take, the less there is to win.</p>
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">4</div>
+        <div class="rule-text">
+          <h3>Lock In When You're Ready</h3>
+          <p>Each team hits <span class="highlight">STOP</span> when they're done building. Your pot freezes at whatever it shows. Different teams will have different amounts — that's the tension.</p>
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">5</div>
+        <div class="rule-text">
+          <h3>10 Minutes to Present</h3>
+          <p>Every team presents what they built. Keep it fast, keep it fun. The room votes on the best build.</p>
+        </div>
+      </div>
+
+      <div class="rule-item">
+        <div class="rule-num">6</div>
+        <div class="rule-text">
+          <h3>The Bonus</h3>
+          <p>The team voted best build gets a <span class="highlight">+£50 bonus</span> added to their pot. So you're balancing speed against quality every single round. Three rounds total — scores stack up.</p>
+        </div>
+      </div>
+
+      <div class="rule-item" style="border-left: 4px solid var(--red);">
+        <div class="rule-num" style="color:var(--red)">★</div>
+        <div class="rule-text">
+          <h3>Win Condition</h3>
+          <p>The team with the <span class="highlight">most money</span> after three rounds wins. Simple. Speed gets you money. Quality gets you the bonus. Most money wins.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="rules-summary">
+      <div class="summary-stat">
+        <div class="s-label">Rounds</div>
+        <div class="s-val">3</div>
+        <div class="s-sub">per session</div>
+      </div>
+      <div class="summary-stat">
+        <div class="s-label">Starting Pot</div>
+        <div class="s-val">£100</div>
+        <div class="s-sub">per round</div>
+      </div>
+      <div class="summary-stat">
+        <div class="s-label">Drop Rate</div>
+        <div class="s-val">£1/min</div>
+        <div class="s-sub">continuous</div>
+      </div>
+      <div class="summary-stat">
+        <div class="s-label">Build Time</div>
+        <div class="s-val">30min</div>
+        <div class="s-sub">max</div>
+      </div>
+      <div class="summary-stat">
+        <div class="s-label">Best Build Bonus</div>
+        <div class="s-val">+£50</div>
+        <div class="s-sub">per round</div>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:16px; flex-wrap:wrap;">
+      <button class="btn-next" onclick="goTo('page-title')" style="background:rgba(0,0,0,0.15); color:var(--dark); clip-path:none;">← Back</button>
+      <button class="btn-next" onclick="goTo('page-game')">Start the Show →</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE 3 — GAME SHOW
+============================================================ -->
+<div id="page-game" class="page">
+
+  <!-- HEADER -->
+  <div class="game-header">
+    <h1>Speed Build <span>// Silly Hacks</span></h1>
+    <div class="game-controls">
+      <div class="round-display" id="round-display">Round 1 of 3</div>
+      <button class="btn-reset-all" onclick="resetAll()">↺ Reset All</button>
+      <button class="btn-next" style="font-size:16px; padding:10px 24px; clip-path:none;" onclick="goTo('page-rules')">← Rules</button>
+    </div>
+  </div>
+
+  <!-- COUNTDOWN TIMER -->
+  <div class="countdown-bar">
+    <div class="countdown-wrap">
+      <div class="countdown-timer" id="countdown-display">30:00</div>
+      <div class="countdown-label" id="countdown-label">Build Timer — 30 Minutes</div>
+    </div>
+    <div class="time-done-banner" id="time-done">⏱ Time's Up — Present Now!</div>
+  </div>
+
+  <!-- BONUS ROUND BANNER -->
+  <div class="bonus-banner" id="bonus-banner">
+    <div class="bonus-banner-text">⚡ BONUS ROUND — ALL TO PLAY FOR ⚡</div>
+    <div class="bonus-banner-sub">15 minutes only — most money wins — everything on the line</div>
+  </div>
+
+  <!-- CATEGORY BANNER -->
+  <div class="category-banner" id="category-banner">
+    <div class="cat-label">// This Round's Category</div>
+    <div class="cat-text" id="category-text">
+      WORLD'S WORST <span class="cat-blank" id="category-blank">___________</span>
+    </div>
+  </div>
+
+  <!-- TEAMS -->
+  <div class="teams-grid" id="teams-grid">
+    <!-- Generated by JS -->
+  </div>
+
+  <!-- FOOTER -->
+  <div class="game-footer">
+    <button class="btn-play-round" onclick="playRound()">🎲 Play a Round</button>
+    <button class="btn-start-clock" id="clock-btn" onclick="toggleClock()">▶ Start Clock</button>
+    <div class="clock-status" id="clock-status">Clock Paused</div>
+    <div style="margin-left:auto; display:flex; gap:10px; align-items:center;">
+      <button class="btn-bonus-round" onclick="startBonusRound()">⚡ Bonus Round</button>
+      <button class="btn-reset-all" onclick="newRound()">Next Round →</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- CATEGORY MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-label">// This Round's Challenge</div>
+    <div class="modal-category" id="modal-cat-text">
+      WORLD'S WORST<br><span class="modal-blank" id="modal-blank">___________</span>
+    </div>
+    <div class="modal-sub" id="modal-sub">Write your suggestions — one goes in the hat</div>
+    <button class="modal-close" onclick="closeModal()">Got It — Start Building!</button>
+  </div>
+</div>
+
+<script>
+  // ============================================================
+  // STATE
+  // ============================================================
+  const TEAM_NAMES = ['Lodge A', 'Lodge B', 'Lodge C', 'Lodge D'];
+  const TEAM_COLOURS = ['#FF1E1E', '#FF6B00', '#0099FF', '#FF3DB4'];
+  const START_POT = 100;
+  const DROP_RATE = 1; // £ per minute
+  const BONUS = 50;
+  const MAX_ROUNDS = 3;
+
+  const CATEGORIES = [
+    { prefix: "WORLD'S WORST", blank: true },
+    { prefix: "WORLD'S BEST", blank: true },
+    { prefix: "MOST USELESS", blank: true },
+    { prefix: "MOST DANGEROUS", blank: true },
+    { prefix: "WORLD'S LEAST NECESSARY", blank: true },
+    { prefix: "MOST PASSIVE AGGRESSIVE", blank: true },
+    { prefix: "WORST POSSIBLE", blank: true },
+    { prefix: "MOST OVERENGINEERED", blank: true },
+    { prefix: "LEAST ETHICAL", blank: true },
+    { prefix: "WORLD'S MOST CHAOTIC", blank: true },
+  ];
+
+  let state = {
+    round: 1,
+    clockRunning: false,
+    clockInterval: null,
+    secondsElapsed: 0,
+    isBonusRound: false,
+    currentBuildSeconds: 30 * 60,
+    teams: TEAM_NAMES.map((name, i) => ({
+      name,
+      colour: TEAM_COLOURS[i],
+      pot: START_POT,
+      stopped: false,
+      totalScore: 0,
+    }))
+  };
+
+  // ============================================================
+  // PAGE NAV
+  // ============================================================
+  function goTo(pageId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+    if (pageId === 'page-game') renderTeams();
+    window.scrollTo(0, 0);
+  }
+
+  // ============================================================
+  // RENDER TEAMS
+  // ============================================================
+  function renderTeams() {
+    const grid = document.getElementById('teams-grid');
+    grid.innerHTML = '';
+
+    state.teams.forEach((team, i) => {
+      const potClass = team.pot > 70 ? 'high' : team.pot > 40 ? 'mid' : team.pot > 20 ? 'low' : 'critical';
+      const card = document.createElement('div');
+      card.className = `team-card ${team.stopped ? 'stopped' : ''}`;
+      card.id = `team-${i}`;
+      card.innerHTML = `
+        <div class="team-name-display" style="color:${team.colour}">${team.name}</div>
+        <div class="team-pot ${potClass}" id="pot-${i}">£${team.pot}</div>
+        <div class="team-total">
+          Total: <span id="total-${i}">£${team.totalScore + (team.stopped ? team.pot : 0)}</span>
+        </div>
+        <div class="team-buttons">
+          <button class="btn btn-stop" id="stop-btn-${i}"
+            onclick="stopTeam(${i})"
+            ${team.stopped ? 'disabled' : ''}>
+            ${team.stopped ? '✓ Locked In' : '⏹ Stop Clock'}
+          </button>
+          <button class="btn btn-bonus" onclick="addBonus(${i})">
+            ⭐ +£${BONUS} Best Build Bonus
+          </button>
+          <button class="btn btn-reset-team" onclick="resetTeam(${i})">↺ Reset Team</button>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+
+    updateRoundDisplay();
+  }
+
+  // ============================================================
+  // CLOCK
+  // ============================================================
+  const BUILD_SECONDS = 30 * 60;
+  const BONUS_SECONDS = 15 * 60;
+
+  function startBonusRound() {
+    pauseClock();
+    // Bank current round scores
+    state.teams.forEach(team => {
+      if (team.stopped) team.totalScore += team.pot;
+      team.pot = START_POT;
+      team.stopped = false;
+    });
+    state.secondsElapsed = 0;
+    state.isBonusRound = true;
+    state.currentBuildSeconds = BONUS_SECONDS;
+    document.getElementById('bonus-banner').classList.add('visible');
+    document.getElementById('category-banner').classList.remove('visible');
+    document.getElementById('time-done').classList.remove('visible');
+    updateCountdownDisplay();
+    renderTeams();
+    const status = document.getElementById('clock-status');
+    status.textContent = '⚡ Bonus Round — 15 Minutes';
+    status.classList.remove('ticking');
+  }
+
+  function updateCountdownDisplay() {
+    const remaining = Math.max(0, state.currentBuildSeconds - state.secondsElapsed);
+    const mins = Math.floor(remaining / 60);
+    const secs = remaining % 60;
+    const display = document.getElementById('countdown-display');
+    const label = document.getElementById('countdown-label');
+    const done = document.getElementById('time-done');
+
+    display.textContent = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+
+    if (remaining <= 0) {
+      display.className = 'countdown-timer done';
+      display.textContent = '00:00';
+      label.textContent = "Time's up!";
+      done.classList.add('visible');
+      pauseClock();
+    } else if (remaining <= 180) {
+      display.className = 'countdown-timer critical';
+      label.textContent = state.isBonusRound ? '⚡ Final 3 Minutes — ALL TO PLAY FOR!' : 'Final 3 Minutes — Go Go Go!';
+    } else if (remaining <= 600) {
+      display.className = 'countdown-timer urgent';
+      label.textContent = `${mins} Minutes Remaining — Wrap It Up`;
+    } else {
+      display.className = 'countdown-timer';
+      label.textContent = state.isBonusRound ? `⚡ Bonus Round — ${mins} Minutes Remaining` : `Build Timer — ${mins} Minutes Remaining`;
+    }
+  }
+
+  function toggleClock() {
+    if (state.clockRunning) {
+      pauseClock();
+    } else {
+      startClock();
+    }
+  }
+
+  function startClock() {
+    if (state.clockRunning) return;
+    state.clockRunning = true;
+    const btn = document.getElementById('clock-btn');
+    const status = document.getElementById('clock-status');
+    btn.textContent = '⏸ Pause Clock';
+    btn.classList.add('running');
+    status.textContent = '● Clock Running — £1/min';
+    status.classList.add('ticking');
+
+    state.clockInterval = setInterval(() => {
+      state.secondsElapsed++;
+      updateCountdownDisplay();
+
+      // Every 60 seconds, drop £1 from all non-stopped teams
+      if (state.secondsElapsed % 60 === 0) {
+        state.teams.forEach((team, i) => {
+          if (!team.stopped && team.pot > 0) {
+            team.pot = Math.max(0, team.pot - DROP_RATE);
+            updateTeamDisplay(i);
+          }
+        });
+      }
+
+      // Update footer status
+      const mins = Math.floor(state.secondsElapsed / 60);
+      const secs = state.secondsElapsed % 60;
+      status.textContent = `● ${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')} elapsed — £1/min`;
+    }, 1000);
+  }
+
+  function pauseClock() {
+    clearInterval(state.clockInterval);
+    state.clockRunning = false;
+    const btn = document.getElementById('clock-btn');
+    const status = document.getElementById('clock-status');
+    if (btn) btn.textContent = '▶ Start Clock';
+    if (btn) btn.classList.remove('running');
+    if (status) status.classList.remove('ticking');
+    const mins = Math.floor(state.secondsElapsed / 60);
+    const secs = state.secondsElapsed % 60;
+    if (status) status.textContent = `Paused at ${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+  }
+
+  // ============================================================
+  // TEAM ACTIONS
+  // ============================================================
+  function stopTeam(i) {
+    const team = state.teams[i];
+    if (team.stopped) return;
+    team.stopped = true;
+    renderTeams();
+    if (!state.clockRunning) return;
+    // Check if all stopped
+    if (state.teams.every(t => t.stopped)) pauseClock();
+  }
+
+  function addBonus(i) {
+    state.teams[i].pot += BONUS;
+    updateTeamDisplay(i);
+  }
+
+  function resetTeam(i) {
+    pauseClock();
+    const team = state.teams[i];
+    // Save score if stopped
+    if (team.stopped) team.totalScore += team.pot;
+    team.pot = START_POT;
+    team.stopped = false;
+    state.secondsElapsed = 0;
+    renderTeams();
+    const status = document.getElementById('clock-status');
+    status.textContent = 'Clock Paused';
+    status.classList.remove('ticking');
+  }
+
+  function updateTeamDisplay(i) {
+    const team = state.teams[i];
+    const potEl = document.getElementById(`pot-${i}`);
+    const totalEl = document.getElementById(`total-${i}`);
+    const card = document.getElementById(`team-${i}`);
+    if (!potEl) return;
+    potEl.textContent = `£${team.pot}`;
+    potEl.className = `team-pot ${team.pot > 70 ? 'high' : team.pot > 40 ? 'mid' : team.pot > 20 ? 'low' : 'critical'}`;
+    if (totalEl) totalEl.textContent = `£${team.totalScore + (team.stopped ? team.pot : 0)}`;
+    if (card) card.className = `team-card ${team.stopped ? 'stopped' : ''}`;
+  }
+
+  // ============================================================
+  // ROUND MANAGEMENT
+  // ============================================================
+  function newRound() {
+    pauseClock();
+    state.teams.forEach(team => {
+      if (team.stopped) team.totalScore += team.pot;
+      team.pot = START_POT;
+      team.stopped = false;
+    });
+    state.round = Math.min(state.round + 1, MAX_ROUNDS);
+    state.secondsElapsed = 0;
+    state.isBonusRound = false;
+    state.currentBuildSeconds = BUILD_SECONDS;
+    document.getElementById('category-banner').classList.remove('visible');
+    document.getElementById('bonus-banner').classList.remove('visible');
+    document.getElementById('time-done').classList.remove('visible');
+    updateCountdownDisplay();
+    renderTeams();
+    const status = document.getElementById('clock-status');
+    status.textContent = 'Clock Paused';
+    status.classList.remove('ticking');
+  }
+
+  function resetAll() {
+    pauseClock();
+    state.round = 1;
+    state.secondsElapsed = 0;
+    state.isBonusRound = false;
+    state.currentBuildSeconds = BUILD_SECONDS;
+    state.teams = TEAM_NAMES.map((name, i) => ({
+      name, colour: TEAM_COLOURS[i],
+      pot: START_POT, stopped: false, totalScore: 0
+    }));
+    document.getElementById('category-banner').classList.remove('visible');
+    document.getElementById('bonus-banner').classList.remove('visible');
+    document.getElementById('time-done').classList.remove('visible');
+    updateCountdownDisplay();
+    renderTeams();
+    const status = document.getElementById('clock-status');
+    status.textContent = 'Clock Paused';
+    status.classList.remove('ticking');
+  }
+
+  function updateRoundDisplay() {
+    document.getElementById('round-display').textContent = `Round ${state.round} of ${MAX_ROUNDS}`;
+  }
+
+  // ============================================================
+  // CATEGORY / PLAY A ROUND
+  // ============================================================
+  function playRound() {
+    const cat = CATEGORIES[Math.floor(Math.random() * CATEGORIES.length)];
+
+    // Show in banner
+    document.getElementById('category-text').innerHTML = 
+      `${cat.prefix} <span class="cat-blank">___________</span>`;
+    document.getElementById('category-banner').classList.add('visible');
+
+    // Show modal
+    document.getElementById('modal-cat-text').innerHTML =
+      `${cat.prefix}<br><span class="modal-blank">___________</span>`;
+    document.getElementById('modal-sub').textContent =
+      `Write your suggestions — one goes in the hat`;
+    document.getElementById('modal').classList.add('open');
+  }
+
+  function closeModal() {
+    document.getElementById('modal').classList.remove('open');
+  }
+
+  // Init
+  renderTeams();
+</script>
+
+</body>
+</html>
