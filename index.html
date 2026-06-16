@@ -13,10 +13,10 @@
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
   html, body { width: 100%; min-height: 100vh; background: #000 !important; -webkit-text-size-adjust: 100%; font-family: 'Share Tech Mono', monospace; color: #fff; }
 
-  #phase-standby { position: fixed; inset: 0; z-index: 30; background: #000; }
+  #phase-standby { position: fixed; inset: 0; z-index: 30; background: #000; display: none; }
   #phase-standby img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-  #glitch-canvas { position: fixed; inset: 0; z-index: 40; display: none; pointer-events: none; }
+  #glitch-canvas { position: fixed; inset: 0; z-index: 40; display: block; pointer-events: none; background: #000; }
 
   #phase-narrative { display: none; position: fixed; inset: 0; z-index: 20; overflow-y: auto; background: #000; }
   #phase-narrative::before { content: ''; position: fixed; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.1) 3px, rgba(0,0,0,0.1) 4px); pointer-events: none; z-index: 100; }
@@ -26,6 +26,16 @@
   .ln { display: block; min-height: 1.9em; white-space: pre-wrap; word-break: break-word; }
   .ln.gap { display: block; min-height: 1.9em; }
   .cursor { display: inline-block; width: 10px; height: 1.1em; background: #fff; vertical-align: text-bottom; margin-left: 2px; animation: blink 0.8s step-end infinite; }
+
+  @keyframes textGlitch {
+    0%   { color: #fff; text-shadow: none; transform: none; }
+    15%  { color: #FF1E1E; text-shadow: 3px 0 0 rgba(255,30,30,0.6); transform: translateX(3px); }
+    30%  { color: #fff; text-shadow: none; transform: translateX(-1px); }
+    45%  { color: #FF1E1E; text-shadow: -2px 0 0 rgba(255,30,30,0.5); transform: translateX(0); }
+    60%  { color: #fff; text-shadow: none; transform: none; }
+    100% { color: #fff; text-shadow: none; transform: none; }
+  }
+  .ln.glitch { animation: textGlitch 0.4s ease-out forwards; }
   @keyframes blink { 50% { opacity: 0; } }
 
   .continue-btn { margin-top: 48px; display: none; font-family: 'Share Tech Mono', monospace; font-size: clamp(11px,1.8vw,13px); letter-spacing: 4px; text-transform: lowercase; color: #000; background: #fff; border: none; padding: 14px 40px; cursor: pointer; transition: all 0.15s; }
@@ -121,7 +131,7 @@
 const NARRATIVE = [
   { text: 'on october 3rd, 2024, governments around the world received a transmission.', delay: 600 },
   { gap: true, delay: 100 },
-  { text: 'it purported to be from the year 2036.', delay: 400 },
+  { text: 'it claimed to be from the year 2036.', delay: 400 },
   { gap: true, delay: 100 },
   { text: 'it was, of course, ignored.', delay: 700 },
   { gap: true, delay: 400 },
@@ -137,11 +147,11 @@ const NARRATIVE = [
   { gap: true, delay: 600 },
   { text: 'what we are facing is fast.', delay: 700 },
   { gap: true, delay: 200 },
-  { text: 'we need to be faster.', delay: 400 },
+  { text: 'we must be faster.', delay: 400 },
   { gap: true, delay: 700 },
   { text: 'THE BUREAU is now recruiting.', delay: 800, bold: 'THE BUREAU' },
   { gap: true, delay: 400 },
-  { text: 'welcome to speed build 2026.', delay: 600 },
+  { text: 'welcome to speed build 2026.', delay: 600, color: '#FF2222' },
   { gap: true, delay: 600 },
 ];
 
@@ -377,6 +387,20 @@ function typeInto(el, text, boldWord) {
   });
 }
 
+function startTextGlitch() {
+  function triggerRandomGlitch() {
+    var lines = document.querySelectorAll('#narrative-inner .ln:not(.gap)');
+    if (lines.length > 0) {
+      var target = lines[Math.floor(Math.random() * lines.length)];
+      target.classList.add('glitch');
+      setTimeout(function() { target.classList.remove('glitch'); }, 400);
+    }
+    // Random interval between glitches: 1.5 to 5 seconds
+    setTimeout(triggerRandomGlitch, 1500 + Math.random() * 3500);
+  }
+  setTimeout(triggerRandomGlitch, 2000);
+}
+
 async function runNarrative() {
   for (var j=0; j<NARRATIVE.length; j++) {
     var item = NARRATIVE[j];
@@ -384,7 +408,9 @@ async function runNarrative() {
     await new Promise(function(r){setTimeout(r,item.delay);});
     if (stopped) break;
     if (item.gap) { var g=document.createElement('span'); g.className='ln gap'; narrativeInner.appendChild(g); continue; }
-    var ln=document.createElement('span'); ln.className='ln'; narrativeInner.appendChild(ln);
+    var ln=document.createElement('span'); ln.className='ln'; 
+    if (item.color) { ln.style.color = item.color; ln.style.textShadow = '0 0 12px rgba(255,40,40,0.9), 0 0 30px rgba(255,0,0,0.5)'; }
+    narrativeInner.appendChild(ln);
     await typeInto(ln, item.text, item.bold);
     if (cursorEl) { cursorEl.remove(); cursorEl=null; }
     await new Promise(function(r){setTimeout(r,150);});
