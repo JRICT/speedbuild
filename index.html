@@ -239,7 +239,7 @@ function startClocks() {
     var pounds = Math.floor(current);
     var pence = String(Math.floor((current - pounds) * 100)).padStart(2,'0');
     var prizeEl = document.getElementById('clock-prize');
-    if (prizeEl) prizeEl.textContent = '£' + pounds.toLocaleString() + '.' + pence;
+    if (prizeEl) prizeEl.textContent = '$' + pounds.toLocaleString() + '.' + pence;
 
     // Timer: 24:00:00 -> 00:00:00 over 3 minutes
     var simRem = SIM_TOTAL_MS * (1 - progress);
