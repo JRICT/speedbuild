@@ -125,7 +125,7 @@
             <div class="clock-value red" id="clock-prize">$20,000</div>
           </div>
         </div>
-        <div class="clock-label">prize money</div>
+        <div class="clock-label">dollars</div>
       </div>
     </div>
     <div id="page-two-content"></div>
@@ -239,7 +239,7 @@ function startClocks() {
     var pounds = Math.floor(current);
     var pence = String(Math.floor((current - pounds) * 100)).padStart(2,'0');
     var prizeEl = document.getElementById('clock-prize');
-    if (prizeEl) prizeEl.textContent = '$' + pounds.toLocaleString() + '.' + pence;
+    if (prizeEl) prizeEl.textContent = '£' + pounds.toLocaleString() + '.' + pence;
 
     // Timer: 24:00:00 -> 00:00:00 over 3 minutes
     var simRem = SIM_TOTAL_MS * (1 - progress);
@@ -412,8 +412,8 @@ function runPageTwo() {
   if(pageTwoRunning)return;
   pageTwoRunning=true;
   pageTwoDone=false;
-  var content=document.getElementById('page-two-content');
-  content.innerHTML='';
+  var cnt=document.getElementById('page-two-content');
+  cnt.innerHTML='';
 
   // Build flat queue
   var queue=[];
@@ -427,28 +427,23 @@ function runPageTwo() {
     });}
   });
 
-  var runId=++runPageTwo.id;
-
   function next(i){
-    // Stop if stale run or done
-    if(runId!==runPageTwo.id||pageTwoDone)return;
-    if(i>=queue.length){
-      finish();return;
-    }
+    if(pageTwoDone)return;
+    if(i>=queue.length){finish();return;}
     var item=queue[i];
 
     if(item.divider){
-      var d=document.createElement('span');d.className='section-gap';content.appendChild(d);
+      var d=document.createElement('span');d.className='section-gap';cnt.appendChild(d);
       setTimeout(function(){next(i+1);},SECTION_PAUSE);return;
     }
     if(item.header){
-      var h=document.createElement('span');h.className='ln section-header';h.textContent=item.header;content.appendChild(h);
-      var hg=document.createElement('span');hg.className='ln gap';content.appendChild(hg);
+      var h=document.createElement('span');h.className='ln section-header';h.textContent=item.header;cnt.appendChild(h);
+      var hg=document.createElement('span');hg.className='ln gap';cnt.appendChild(hg);
       setTimeout(function(){next(i+1);},item.instant?80:200);return;
     }
     if(item.gap){
-      var g=document.createElement('span');g.className='ln gap';content.appendChild(g);
-      setTimeout(function(){next(i+1);},item.instant?20:100);return;
+      var g=document.createElement('span');g.className='ln gap';cnt.appendChild(g);
+      setTimeout(function(){next(i+1);},80);return;
     }
     if(item.instant){
       var ln=document.createElement('span');
@@ -462,23 +457,22 @@ function runPageTwo() {
         if(item.bold===true)ln.style.fontWeight='bold';
         ln.textContent=item.text;
       }
-      content.appendChild(ln);
+      cnt.appendChild(ln);
       setTimeout(function(){next(i+1);},20);return;
     }
     // Typed
-    var delay=item.delay||300;
     setTimeout(function(){
-      if(runId!==runPageTwo.id||pageTwoDone)return;
+      if(pageTwoDone)return;
       var ln=document.createElement('span');
       ln.className='ln'+(item.color?' '+item.color:'');
       if(item.bold===true)ln.style.fontWeight='bold';
-      content.appendChild(ln);
+      cnt.appendChild(ln);
       typeInto(ln,item.text,item.bold&&typeof item.bold==='string'?item.bold:null,item.color).then(function(){
         if(cursorEl){cursorEl.remove();cursorEl=null;}
-        if(runId!==runPageTwo.id||pageTwoDone)return;
+        if(pageTwoDone)return;
         setTimeout(function(){next(i+1);},LINE_PAUSE);
       });
-    },delay);
+    },200);
   }
 
   function finish(){
@@ -487,16 +481,15 @@ function runPageTwo() {
     if(cursorEl)cursorEl.remove();
     var btn=document.createElement('div');btn.className='btn-wrap visible';
     var b=document.createElement('button');b.className='btn-action';b.textContent='JOIN THE FIGHT';
-    btn.appendChild(b);content.appendChild(btn);
-    var psgap=document.createElement('span');psgap.className='ln gap';content.appendChild(psgap);
+    btn.appendChild(b);cnt.appendChild(btn);
+    var psgap=document.createElement('span');psgap.className='ln gap';cnt.appendChild(psgap);
     var ps=document.createElement('span');ps.className='ln';ps.style.fontWeight='bold';
     ps.textContent='p.s. we will be livestreaming everything for the world to see.';
-    content.appendChild(ps);
+    cnt.appendChild(ps);
   }
 
   next(0);
 }
-runPageTwo.id=0;
 
 
 function skipCurrent() {
@@ -555,7 +548,7 @@ function renderPageOneInstant(){
 
 function renderPageTwoInstant(){
   pageTwoDone=true;
-  runPageTwo.id++;
+  pageTwoRunning=false;
   if(cursorEl){cursorEl.remove();cursorEl=null;}
   var content=document.getElementById('page-two-content');
   content.innerHTML='';
