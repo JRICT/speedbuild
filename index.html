@@ -176,12 +176,15 @@ var PAGE_TWO_SECTIONS = [
   { text: 'the quicker you build, the more you keep.' },
   { divider: true },
   { header: 'THE RACE' },
-  { text: 'you will race across three london checkpoints, where you will face three blind challenges focused on agentic finance.' },
-  { text: 'you will be tested on your ability to rebuild humanity\'s financial infrastructure under sustained pressure.' },
-  { text: '30 will enter.' },
-  { text: 'at each checkpoint, the slowest 10 will be eliminated.' },
-  { text: 'only one will walk away with whatever is left on the clock.' },
-  { text: 'THE BUREAU is looking for the fastest minds alive.', bold: 'THE BUREAU' },
+  { text: 'you will race across london checkpoints, where you will face three blind challenges focused on agentic finance.' },
+  { text: 'you will be tested on your ability to rebuild financial infrastructure — from current global payment rails to the protocols that exist in parallel: Solana, x402, Pay.sh + CoralOS.' },
+  { text: 'at each checkpoint, the slowest will be eliminated.' },
+  { divider: true },
+  { header: 'THE LIVESTREAM' },
+  { text: 'this will be no ordinary hackathon. this will be BEDLAM.', bold: 'BEDLAM' },
+  { text: 'every minute will be broadcast live.' },
+  { text: 'the world will decide if you have what it takes.' },
+  { text: 'prepare for chaos.' },
 ];
 
 // ── STATE ──
@@ -445,10 +448,7 @@ function runPageTwo() {
     var btn=document.createElement('div');btn.className='btn-wrap visible';
     var b=document.createElement('button');b.className='btn-action';b.textContent='JOIN THE FIGHT';b.onclick=function(){window.open('https://luma.com/speedbuild2026','_blank');};
     btn.appendChild(b);cnt.appendChild(btn);
-    var psgap=document.createElement('span');psgap.className='ln gap';cnt.appendChild(psgap);
-    var ps=document.createElement('span');ps.className='ln';ps.style.fontWeight='bold';
-    ps.textContent='p.s. we will be livestreaming everything for the world to see.';
-    cnt.appendChild(ps);
+
   }
 
   nextItem();
@@ -538,10 +538,7 @@ function renderPageTwoInstant(){
   var btn=document.createElement('div');btn.className='btn-wrap visible';
   var b=document.createElement('button');b.className='btn-action';b.textContent='JOIN THE FIGHT';b.onclick=function(){window.open('https://luma.com/speedbuild2026','_blank');};
   btn.appendChild(b);cnt.appendChild(btn);
-  var psgap=document.createElement('span');psgap.className='ln gap';cnt.appendChild(psgap);
-  var ps=document.createElement('span');ps.className='ln';ps.style.fontWeight='bold';
-  ps.textContent='p.s. we will be livestreaming everything for the world to see.';
-  cnt.appendChild(ps);
+
 }
 
 
